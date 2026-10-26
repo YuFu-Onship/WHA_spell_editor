@@ -10,7 +10,8 @@ A simple and easy-to-use visual spell creation tool.
 
 [![Framework Wails](https://img.shields.io/badge/Built%20with-Wails-red)](https://wails.io/)
 [![Go Version](https://img.shields.io/badge/Go-1.20+-00ADD8?logo=go)](https://golang.org/)
-[![AI Vibecoded](https://img.shields.io/badge/Vibecoding-GLM--5.3--Flash-blue)](https://zhipuai.cn/)
+![AI Vibecoded](https://img.shields.io/badge/Vibecoding-GLM--5.3--Flash-blue)
+![AI Vibecoded](https://img.shields.io/badge/Vibecoding-Deepseek--4.1--Flash-blue)
 
 </div>
 
