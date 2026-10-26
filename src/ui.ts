@@ -18,6 +18,7 @@ const ICONS: Record<string, string> = {
     seal: '<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="2.5"/>',
     ring: '<circle cx="10" cy="10" r="7"/>',
     line: '<path d="M4 16L16 4"/><circle cx="4" cy="16" r="1.6"/><circle cx="16" cy="4" r="1.6"/>',
+    tint: '<path d="M10 3c3.1 3.6 5 5.9 5 8.1a5 5 0 0 1-10 0C5 8.9 6.9 6.6 10 3z"/>',
     grid: '<path d="M3 3h14v14H3zM7 3v14M11 3v14M15 3v14M3 7h14M3 11h14M3 15h14" stroke-width="1"/>',
     magnet: '<path d="M6 3v7a4 4 0 0 0 8 0V3h-3v7a1 1 0 0 1-2 0V3z"/>',
     zoomOut: '<circle cx="9" cy="9" r="6"/><path d="M16 16l4 4M6.5 9h5"/>',
@@ -49,7 +50,10 @@ export class UI {
         this.buildFloatInfo();
 
         onLangChange(() => this.rebuild());
-        onThemeChange(() => this.syncThemeButton());
+        onThemeChange(() => {
+            this.syncThemeButton();
+            if (!this.editor.colorize) this.editor.refresh();
+        });
 
         this.editor.onChange((state, major) => this.updateDynamic(state, major));
         this.updateDynamic(this.editor.state(), true);
@@ -109,6 +113,7 @@ export class UI {
                         ${langs.map(l => `<option value="${l.id}" ${l.id === getLang() ? "selected" : ""}>${l.label}</option>`).join("")}
                     </select>
                 </div>
+                <button class="tb-btn tb-icon tb-toggle colorize-btn" data-action="colorize" data-toggle="colorize" title="${t("toggle.colorize")}" aria-label="${t("toggle.colorize")}">${icon("tint")}</button>
                 <button class="tb-btn tb-icon theme-btn" data-action="theme" title="${t("toggle.theme")}"></button>
             </div>
         `;
@@ -257,6 +262,7 @@ export class UI {
             case "zoomIn": e.zoomStep(1.25); break;
             case "zoomOut": e.zoomStep(0.8); break;
             case "zoomFit": e.fitView(); break;
+            case "colorize": e.setColorize(!e.colorize); break;
             case "theme": toggleTheme(); break;
         }
     }
@@ -730,7 +736,10 @@ export class UI {
         // toggles
         this.topbar.querySelectorAll('[data-toggle]').forEach(b => {
             const id = (b as HTMLElement).dataset.toggle;
-            const active = id === 'grid' ? state.grid : id === 'snap' ? state.snap : state.tool === 'line';
+            const active = id === 'grid' ? state.grid
+                : id === 'snap' ? state.snap
+                : id === 'colorize' ? state.colorize
+                : state.tool === 'line';
             b.classList.toggle('active', active);
         });
 
@@ -793,7 +802,7 @@ export class UI {
         const catLabel = t(`lib.cat.${category}`);
         const desc = symbolDescription(name, getLangState()) ?? t(`desc.${category}`);
         return `
-            <img class="float-info-img" src="${url}" alt="" />
+            <div class="float-info-img"><img src="${url}" alt="" /></div>
             <div class="float-info-body">
                 <div class="float-info-name">${name}</div>
                 <div class="float-info-cat">${catLabel}</div>

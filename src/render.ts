@@ -1,4 +1,4 @@
-import { CENTER, WORLD, elementBounds, type Pt, type Selection, type Spell, type SpellElement, type Seal } from "./model";
+import { CENTER, WORLD, PICO8, elementBounds, type Pt, type Selection, type Spell, type SpellElement, type Seal } from "./model";
 import { getSymbol, spawnTint } from "./symbols";
 
 export interface Viewport {
@@ -25,6 +25,14 @@ export class Renderer {
 
     viewport: Viewport = { zoom: 1, x: 0, y: 0 };
     activeHandle: string | null = null;
+    colorize = true;
+
+    /** Resolve an element color for drawing, honoring the colorize toggle. */
+    private ink(color: string): string {
+        if (this.colorize) return color;
+        const dark = document.documentElement.dataset.theme === "dark";
+        return dark ? PICO8[7] : PICO8[0];
+    }
 
     constructor(container: HTMLElement) {
         this.svg = el("svg", {
@@ -179,13 +187,13 @@ export class Renderer {
         if (r.filled) {
             g.appendChild(el("circle", {
                 cx: r.x, cy: r.y, r: r.radius,
-                fill: r.fillColor,
+                fill: this.ink(r.fillColor),
                 stroke: "none"
             }));
         }
         const strokeAttrs: Record<string, string | number> = {
             fill: "none",
-            stroke: r.color,
+            stroke: this.ink(r.color),
             "stroke-width": r.weight,
             "stroke-linecap": "round"
         };
@@ -230,7 +238,7 @@ export class Renderer {
             g.appendChild(el("path", {
                 d,
                 fill: "none",
-                stroke: l.color,
+                stroke: this.ink(l.color),
                 "stroke-width": l.weight,
                 "stroke-linecap": "round",
                 "stroke-linejoin": "round"
@@ -269,7 +277,7 @@ export class Renderer {
             preserveAspectRatio: "xMidYMid meet"
         });
         g.appendChild(img);
-        spawnTint(s.symbol, s.color, url => {
+        spawnTint(s.symbol, this.ink(s.color), url => {
             img.setAttribute("href", url);
         });
         if (cls.includes("selected")) {
@@ -303,7 +311,7 @@ export class Renderer {
                 preserveAspectRatio: "xMidYMid meet"
             });
             inner.appendChild(img);
-            spawnTint(s.symbol, s.color, url => {
+            spawnTint(s.symbol, this.ink(s.color), url => {
                 img.setAttribute("href", url);
             });
             if (cls.includes("selected")) {

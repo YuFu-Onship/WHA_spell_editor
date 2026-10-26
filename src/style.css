@@ -20,6 +20,7 @@ html[data-theme="dark"] {
     --color-secondary: #d1d1d6;
     --color-line-hover-bg: #242428;
     --popup-bg: #232327;
+    --thumb-bg: #0c0c0e;
     --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.45);
     --scroll-thumb: #3a3a3e;
     --danger: #e05d5d;
@@ -44,6 +45,7 @@ html[data-theme="light"] {
     --color-secondary: #3c3c42;
     --color-line-hover-bg: #eaecef;
     --popup-bg: #ffffff;
+    --thumb-bg: #e4e4e8;
     --shadow-pop: 0 8px 24px rgba(0, 0, 0, 0.18);
     --scroll-thumb: #c6c6cc;
     --danger: #c04a4a;
@@ -485,10 +487,16 @@ textarea.text-input { resize: vertical; }
     width: 64px;
     height: 64px;
     flex: none;
-    object-fit: contain;
-    background-color: var(--bg-inactive);
+    display: grid;
+    place-items: center;
+    background-color: var(--thumb-bg);
     border-radius: var(--radius);
     padding: 6px;
+}
+
+.float-info-img img {
+    max-width: 100%;
+    max-height: 100%;
     filter: var(--thumb-filter);
 }
 

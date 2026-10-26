@@ -35,6 +35,7 @@ const zh: Dict = {
     "toggle.snap": "吸附",
     "toggle.theme": "明暗",
     "toggle.lang": "语言",
+    "toggle.colorize": "线条着色",
 
     "tool.select": "选择",
     "tool.line": "画线",
@@ -154,6 +155,7 @@ const en: Dict = {
     "toggle.snap": "Snap",
     "toggle.theme": "Theme",
     "toggle.lang": "Language",
+    "toggle.colorize": "Line color",
 
     "tool.select": "Select",
     "tool.line": "Line",
@@ -273,6 +275,7 @@ const ja: Dict = {
     "toggle.snap": "スナップ",
     "toggle.theme": "テーマ",
     "toggle.lang": "言語",
+    "toggle.colorize": "線の着色",
 
     "tool.select": "選択",
     "tool.line": "線",

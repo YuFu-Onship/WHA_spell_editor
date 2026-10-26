@@ -15,6 +15,7 @@ export interface EditorState {
     tool: Tool;
     snap: boolean;
     grid: boolean;
+    colorize: boolean;
     canUndo: boolean;
     canRedo: boolean;
     drawing: boolean;
@@ -24,6 +25,7 @@ type ChangeListener = (state: EditorState, major: boolean) => void;
 
 const SNAP_STEP = 25;
 const ROT_STEP = 15;
+const COLORIZE_KEY = "wha.colorize";
 
 function snapVal(v: number, on: boolean, step = SNAP_STEP): number {
     return on ? Math.round(v / step) * step : Math.round(v);
@@ -38,6 +40,7 @@ export class Editor {
     tool: Tool = "select";
     snap = true;
     grid = true;
+    colorize = true;
 
     private listeners = new Set<ChangeListener>();
     private spawnedIds = new Set<string>();
@@ -73,6 +76,10 @@ export class Editor {
     constructor(container: HTMLElement, initialSpell: Spell) {
         this.spell = initialSpell;
         this.renderer = new Renderer(container);
+        try {
+            if (localStorage.getItem(COLORIZE_KEY) === "off") this.colorize = false;
+        } catch { /* ignore */ }
+        this.renderer.colorize = this.colorize;
         this.history.reset(this.spell);
         (window as any).__editor = this;
         this.bindEvents(container);
@@ -101,6 +108,7 @@ export class Editor {
             tool: this.tool,
             snap: this.snap,
             grid: this.grid,
+            colorize: this.colorize,
             canUndo: this.history.canUndo,
             canRedo: this.history.canRedo,
             drawing: this.draftLine !== null
@@ -207,6 +215,13 @@ export class Editor {
         this.grid = on;
         this.renderer.svg.classList.toggle("hide-grid", !on);
         this.emit();
+    }
+
+    setColorize(on: boolean): void {
+        this.colorize = on;
+        this.renderer.colorize = on;
+        try { localStorage.setItem(COLORIZE_KEY, on ? "on" : "off"); } catch { /* ignore */ }
+        this.refresh();
     }
 
     loadSpell(spell: Spell): void {
